@@ -103,8 +103,8 @@ resource "null_resource" "ansible" {
 
 	connection {
 	  type     = "ssh"
-	  user     = replace(replace(jsonencode(data.vault_generic_secret.secret_data.data["admin_username"]), "\"", ""), ":", "=")
-	  password = replace(replace(jsonencode(data.vault_generic_secret.secret_data.data["admin_password"]), "\"", ""), ":", "=")
+	  user     =  "testadmin"
+	  password =  "Password1234!"
 	  host     = azurerm_public_ip.main.ip_address
 	}
 
