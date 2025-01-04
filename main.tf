@@ -7,3 +7,7 @@ module "components" {
   token     = var.token
 
 }
+
+data "vault_generic_secret" "secret_data" {
+  path = "infra/data/toolsecret"
+}
