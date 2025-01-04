@@ -4,4 +4,7 @@ module "components" {
   component = each.value["name"]
   vm_size   = "Standard_B2s"
   env       = var.env
+  token     = var.token
+  admin_username = var.admin_username
+  admin_password = var.admin_password
 }
