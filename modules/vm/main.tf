@@ -103,8 +103,8 @@ resource "null_resource" "ansible" {
 
 	connection {
 	  type     = "ssh"
-	  user     =  "centos"
-	  password =  "Adminadmin1234$"
+	  admin_username = data.vault_generic_secret.ssh.data["ssh_username"]
+	  admin_password = data.vault_generic_secret.ssh.data["ssh_password"]
 	  host     = azurerm_public_ip.main.ip_address
 	}
 
