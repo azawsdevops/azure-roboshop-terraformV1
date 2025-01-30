@@ -104,7 +104,7 @@ resource "null_resource" "ansible" {
 
 	connection {
 	  type     = "ssh"
-	  user = data.vault_generic_secret.ssh.data["admin_username"]
+	  user     = data.vault_generic_secret.ssh.data["admin_username"]
 	  password = data.vault_generic_secret.ssh.data["admin_password"]
 	  host     = azurerm_public_ip.main.ip_address
 	}
@@ -112,7 +112,7 @@ resource "null_resource" "ansible" {
 	inline = [
 	  "sudo dnf install python3.12-pip -y",
 	  "sudo pip3.12 install ansible",
-	  "ansible-pull -i localhost, -U https://github.com/kp3073/az-roboshop-ansible roboshop.yml -e app_name=${var.component} -e env=${var.env} -e vault_token=${var.vault_token}"
+	  "ansible-pull -i localhost, -U https://github.com/kp3073/az-roboshop-ansible roboshop.yml -e app_name=${var.component} -e env=${var.env}"
 	]
   }
 }
