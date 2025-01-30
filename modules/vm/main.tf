@@ -83,8 +83,8 @@ resource "azurerm_virtual_machine" "main" {
   }
   os_profile {
 	computer_name  = var.component
-	admin_username = "centos"
-	admin_password = "Adminadmin1234$"
+	admin_username = data.vault_generic_secret.ssh.data["ssh_username"]
+	admin_password = data.vault_generic_secret.ssh.data["ssh_password"]
   }
   os_profile_linux_config {
 	disable_password_authentication = false
