@@ -1,17 +1,17 @@
 resource "azurerm_public_ip" "main" {
-  name                = "${var.component}-${var.env}-ip"
+  name                = "${var.database}-${var.env}-ip"
   location            = data.azurerm_resource_group.main.location
   resource_group_name = data.azurerm_resource_group.main.name
   allocation_method = "Dynamic"
   sku               = "Basic"
 
   tags = {
-	component = "${var.component}-${var.env}-ip"
+	database = "${var.database}-${var.env}-ip"
   }
 }
 
 resource "azurerm_network_interface" "main" {
-  name                = "${var.component}-${var.env}-nic"
+  name                = "${var.database}-${var.env}-nic"
   location            = data.azurerm_resource_group.main.location
   resource_group_name = data.azurerm_resource_group.main.name
 
@@ -24,7 +24,7 @@ resource "azurerm_network_interface" "main" {
 }
 
 resource "azurerm_network_security_group" "main" {
-  name                = "${var.component}-${var.env}-nsg"
+  name                = "${var.database}-${var.env}-nsg"
   location            = data.azurerm_resource_group.main.location
   resource_group_name = data.azurerm_resource_group.main.name
 
@@ -41,7 +41,7 @@ resource "azurerm_network_security_group" "main" {
   }
 
   tags = {
-	component = "${var.component}-${var.env}-nsg"
+	database = "${var.database}-${var.env}-nsg"
   }
 }
 
@@ -52,7 +52,7 @@ resource "azurerm_network_interface_security_group_association" "main" {
 }
 
 resource "azurerm_dns_a_record" "main" {
-  name                = "${var.component}-${var.env}"
+  name                = "${var.database}-${var.env}"
   zone_name           = "cloudaws.shop"
   resource_group_name = data.azurerm_resource_group.main.name
   ttl                 = 10
@@ -62,7 +62,7 @@ resource "azurerm_dns_a_record" "main" {
 
 resource "azurerm_virtual_machine" "main" {
   depends_on = [azurerm_network_interface_security_group_association.main, azurerm_dns_a_record.main]
-  name                = "${var.component}-${var.env}"
+  name                = "${var.database}-${var.env}"
   location            = data.azurerm_resource_group.main.location
   resource_group_name = data.azurerm_resource_group.main.name
   network_interface_ids = [azurerm_network_interface.main.id]
@@ -77,13 +77,13 @@ resource "azurerm_virtual_machine" "main" {
   }
 
   storage_os_disk {
-	name              = "${var.component}-${var.env}"
+	name              = "${var.database}-${var.env}"
 	caching           = "ReadWrite"
 	create_option     = "FromImage"
 	managed_disk_type = "Standard_LRS"
   }
   os_profile {
-	computer_name  = var.component
+	computer_name  = var.database
 	admin_username = data.vault_generic_secret.ssh.data["admin_username"]
 	admin_password = data.vault_generic_secret.ssh.data["admin_password"]
   }
@@ -91,7 +91,7 @@ resource "azurerm_virtual_machine" "main" {
 	disable_password_authentication = false
   }
   tags = {
-	component = "${var.component}-${var.env}"
+	database = "${var.database}-${var.env}"
   }
 }
 
@@ -112,7 +112,7 @@ resource "null_resource" "ansible" {
 	inline = [
 	  "sudo dnf install python3.12-pip -y",
 	  "sudo pip3.12 install ansible hvac",
-	  "ansible-pull -i localhost, -U https://github.com/kp3073/az-roboshop-ansible roboshop.yml -e app_name=${var.component} -e ENV=${var.env} -e vault_token=${var.vault_token}"
+	  "ansible-pull -i localhost, -U https://github.com/kp3073/az-roboshop-ansible roboshop.yml -e app_name=${var.database} -e ENV=${var.env} -e vault_token=${var.vault_token}"
 	]
   }
 }
