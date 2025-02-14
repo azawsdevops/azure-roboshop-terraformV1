@@ -4,5 +4,5 @@ jobs:
   terraform-apply:
     runs-on: self-hosted
     steps:
+    - uses: actions/checkout@v4
     - run: ls -a
-    - run: terraform init
