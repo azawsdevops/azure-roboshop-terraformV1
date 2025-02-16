@@ -9,7 +9,7 @@ jobs:
       id: import-secrets
       uses: hashicorp/vault-action@v2
       with:
-          url: https://vault-internal.cloudaws.shop:8200
+          url: http://vault-internal.cloudaws.shop:8200
           token: ${{ secrets.VAULT_TOKEN }}
           caCertificate: ${vault_token}
           secrets: |
