@@ -11,12 +11,11 @@ jobs:
       with:
           url: http://vault-internal.cloudaws.shop:8200
           token: ${{ secrets.VAULT_TOKEN }}
-          caCertificate: ${vault_token}
+          caCertificate: ${{ secrets.VAULT_TOKEN }}
           secrets: |
             github-action/data/azure_sp *;
       env:
         vault_token: ${{ secrets.VAULT_TOKEN }}
-      
     - run: make dev-apply vault_token=${vault_token}
       env:
         vault_token: ${{ secrets.VAULT_TOKEN }}
