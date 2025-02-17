@@ -20,7 +20,7 @@ resource "null_resource" "external-secrets" {
   depends_on = [helm_release.external-secrets]
   provisioner "local-exec" {
 	command = <<EOF
-	kubectl create secret generic vault_token --from-literal=token=${var.vault_token}
+	kubectl create secret generic vault_token --from-literal=token=${var.token}
 	EOF
   }
 }
