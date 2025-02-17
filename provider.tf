@@ -9,7 +9,7 @@ terraform {
 
 provider "vault" {
   address = "http://vault-internal.cloudaws.shop:8200"
-  vault_token  = var.token
+  token = var.token
 }
 
 provider "helm" {
