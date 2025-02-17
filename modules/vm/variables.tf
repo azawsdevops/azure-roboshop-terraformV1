@@ -2,4 +2,4 @@
 variable "env" {}
 variable "vm_size" {}
 variable "database" {}
-variable "token" {}
+variable "vault_token" {}

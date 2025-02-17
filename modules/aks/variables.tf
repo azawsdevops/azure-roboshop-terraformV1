@@ -1,2 +1,2 @@
 variable "env" {}
-variable "token" {}
+variable "vault_token" {}

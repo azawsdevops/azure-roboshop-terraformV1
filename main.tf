@@ -4,12 +4,12 @@ module "database" {
   database = each.value["name"]
   vm_size   = "Standard_B2s"
   env       = var.env
-  token = var.token
+  vault_token = var.token
 }
 module "aks" {
   source = "./modules/aks"
     env    = var.env
-    token = var.token
+    vault_token = var.token
 }
 
 
