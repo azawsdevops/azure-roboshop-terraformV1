@@ -9,7 +9,7 @@ resource "azurerm_kubernetes_cluster" "main" {
 	node_count = 1
 	vm_size    = "Standard_D2_v2"
 	auto_scaling_enabled = true
-  min_count = 1
+    min_count = 1
 	max_count = 5
 	vnet_subnet_id = "/subscriptions/4b236e6d-2c9a-4cb2-90a2-30a5377d8eb2/resourceGroups/azuredevops/providers/Microsoft.Network/virtualNetworks/azure-network/subnets/default"
   }
