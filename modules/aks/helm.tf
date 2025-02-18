@@ -16,11 +16,11 @@ resource "helm_release" "external-secrets" {
   namespace  = "kube-system"
 }
 
-resource "null_resource" "external-secrets" {
+resource "null_resource" "create-secrets" {
   depends_on = [helm_release.external-secrets]
   provisioner "local-exec" {
 	command = <<EOF
-    kubectl apply -f /opt/vault-token.yaml 
+    kubectl create secret generic vault-token --from-literal=token=${var.vault_token}
 	EOF
   }
 }
