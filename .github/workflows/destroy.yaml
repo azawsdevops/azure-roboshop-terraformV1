@@ -1,21 +1,9 @@
-name: Terraform apply
+name: Terraform destroy
 on: workflow_dispatch
 jobs:
-  terraform-destroy:
-    runs-on: self-hosted
-    steps:
-    - uses: actions/checkout@v4 # This action checks out the repository
-#    - name: Import Secrets
-#      id: import-secrets
-#      uses: hashicorp/vault-action@v2
-#      with:
-#          url: http://vault-internal.cloudaws.shop:8200
-#          token: ${{ secrets.VAULT_TOKEN }}
-#          caCertificate: ${{ secrets.VAULT_TOKEN }}
-#          secrets: |
-#            github-action/data/azure_sp *;
-#      env:
-#        vault_token: ${{ secrets.VAULT_TOKEN }}
-    - run: make dev-destroy vault_token=${vault_token}
-      env:
-        vault_token: ${{ secrets.VAULT_TOKEN }}
+  terraform:
+    uses: azawsdevops/github-reusable-modules/.github/workflows/terraform.yaml@main
+    with:
+      action: destroy
+    secrets:
+      VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
