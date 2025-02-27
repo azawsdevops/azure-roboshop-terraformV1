@@ -2,7 +2,7 @@ name: Terrafom apply
 on: workflow_dispatch
 jobs:
   terraform:
-    uses: azawsdevops/github-reusable-modules/.github/workflow/terraform.yaml@main
+    uses: azawsdevops/github-reusable-modules/.github/workflows/terraform.yaml@main
     with:
       action: apply
     secrets:
