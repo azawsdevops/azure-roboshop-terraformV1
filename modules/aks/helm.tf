@@ -16,6 +16,7 @@ resource "helm_release" "external-secrets" {
   namespace  = "kube-system"
 }
 
+
 resource "null_resource" "create-secrets" {
   depends_on = [helm_release.external-secrets]
   provisioner "local-exec" {
@@ -27,7 +28,7 @@ resource "null_resource" "create-secrets" {
 }
 
 resource "null_resource" "argocd" {
-  depends_on = [null_resource.kubeconfig]
+  depends_on = [null_resource.kubeconfig, null_resource.create-secrets]
   provisioner "local-exec" {
 	command = <<EOF
 kubectl apply -f ${path.module}/files/argocd-ns.yaml
