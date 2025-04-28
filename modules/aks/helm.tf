@@ -47,3 +47,11 @@ resource "helm_release" "pstack" {
   chart      = "kube-prometheus-stack"
   namespace  = "kube-system"
 }
+
+resource "helm_release" "ingress" {
+  depends_on = [null_resource.kubeconfig]
+  name       = "ingress"
+  repository = "https://kubernetes.github.io/ingress-nginx"
+  chart      = "ingress-nginx"
+  namespace  = "kube-system"
+}
