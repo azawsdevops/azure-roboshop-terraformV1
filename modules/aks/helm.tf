@@ -39,3 +39,11 @@ EOF
 }
 
 ##kubectl apply -f ${path.module}/files/secretstore.yaml
+
+resource "helm_release" "pstack" {
+  depends_on = [null_resource.kubeconfig]
+  name       = "pstack"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  namespace  = "kube-system"
+}
