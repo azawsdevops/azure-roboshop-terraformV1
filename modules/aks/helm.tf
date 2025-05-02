@@ -55,3 +55,15 @@ resource "helm_release" "ingress" {
   chart      = "ingress-nginx"
   namespace  = "kube-system"
 }
+
+resource "helm_release" "extenal-dns" {
+  depends_on = [null_resource.kubeconfig]
+  name       = "external-dns"
+  repository = "https://kubernetes-sigs.github.io/external-dns/"
+  chart      = "external-dns"
+  namespace  = "kube-system"
+    set {
+        name  = "provider"
+        value = "azure"
+    }
+}
