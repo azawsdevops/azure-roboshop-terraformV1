@@ -56,7 +56,7 @@ resource "helm_release" "ingress" {
   namespace  = "kube-system"
 }
 
-resource "helm_release" "extenal-dns" {
+resource "helm_release" "dns" {
   depends_on = [null_resource.kubeconfig]
   name       = "external-dns"
   repository = "https://kubernetes-sigs.github.io/external-dns/"
