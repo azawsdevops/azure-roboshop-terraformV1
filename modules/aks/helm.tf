@@ -62,4 +62,7 @@ resource "helm_release" "dns" {
   repository = "https://kubernetes-sigs.github.io/external-dns/"
   chart      = "external-dns"
   namespace  = "kube-system"
+  values = [
+  file("${path.module}/files/external-dns.yaml")
+  ]
 }
