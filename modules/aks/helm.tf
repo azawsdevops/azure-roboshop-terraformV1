@@ -59,7 +59,7 @@ resource "helm_release" "ingress" {
 resource "helm_release" "dns" {
   depends_on = [null_resource.kubeconfig]
   name       = "external-dns"
-  repository = "https://charts.bitnami.com/bitnami"
+  repository = "https://kubernetes-sigs.github.io/external-dns/"
   chart      = "external-dns"
   namespace  = "kube-system"
     set {
