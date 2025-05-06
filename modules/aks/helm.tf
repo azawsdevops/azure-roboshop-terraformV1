@@ -55,24 +55,24 @@ resource "helm_release" "ingress" {
   chart      = "ingress-nginx"
   namespace  = "kube-system"
 }
-
-resource "null_resource" "external-dns-secret" {
-  depends_on = [null_resource.kubeconfig]
-  provisioner "local-exec" {
-    command = <<EOT
-cat <<-EOF > ${path.module}/azure.json
-{
-  "tenantId": "${data.vault_generic_secret.az.data["tenant_id"]}",
-  "subscriptionId": "${data.vault_generic_secret.az.data["ARM_SUBSCRIPTION_ID"]}",
-  "resourceGroup": "${data.azurerm_resource_group.main.name}",
-  "useManagedIdentityExtension": true,
-  "userAssignedIdentityID": "${azurerm_kubernetes_cluster.main.kubelet_identity[0].${data.vault_generic_secret.az.data["ARM_CLIENT_ID"]}}",
-}
-EOF
-kubectl create secret generic azure-config-file --namespace "kube-system" --from-file=${path.module}/azure.json
-EOT
-  }
-}
+# 
+# resource "null_resource" "external-dns-secret" {
+#   depends_on = [null_resource.kubeconfig]
+#   provisioner "local-exec" {
+#     command = <<EOT
+# cat <<-EOF > ${path.module}/azure.json
+# {
+#   "tenantId": "${data.vault_generic_secret.az.data["tenant_id"]}",
+#   "subscriptionId": "${data.vault_generic_secret.az.data["ARM_SUBSCRIPTION_ID"]}",
+#   "resourceGroup": "${data.azurerm_resource_group.main.name}",
+#   "useManagedIdentityExtension": true,
+#   "userAssignedIdentityID": "${azurerm_kubernetes_cluster.main.kubelet_identity[0].${data.vault_generic_secret.az.data["ARM_CLIENT_ID"]}}",
+# }
+# EOF
+# kubectl create secret generic azure-config-file --namespace "kube-system" --from-file=${path.module}/azure.json
+# EOT
+#   }
+# }
 
 resource "helm_release" "dns" {
   depends_on = [null_resource.kubeconfig]
@@ -80,7 +80,25 @@ resource "helm_release" "dns" {
   repository = "https://kubernetes-sigs.github.io/external-dns/"
   chart      = "external-dns"
   namespace  = "kube-system"
-  values = [
-    file("${path.module}/files/external-dns.yaml")
-  ]
+#   values = [
+#     file("${path.module}/files/external-dns.yaml")
+#   ]
 }
+
+# cat <<EOF | kubectl apply -f -
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: external-dns-azure
+#   namespace: kube-system
+# data:
+#     azure.json: |
+# {
+# "tenantId" : "${data.vault_generic_secret.az.data["tenant_id"]",
+# "subscriptionId" : "${data.vault_generic_secret.az.data["ARM_SUBSCRIPTION_ID"]",
+# "resourceGroup" : ${data.azurerm_resource_group.main.name},
+# "aadClientId" : "${data.vault_generic_secret.az.data["ARM_CLIENT_ID"]",
+# "aadClientSecret" : "${data.vault_generic_secret.az.data["ARM_CLIENT_SECRET"]"
+# 
+# }
+# EOF
