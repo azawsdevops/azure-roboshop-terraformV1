@@ -56,6 +56,24 @@ resource "helm_release" "ingress" {
   namespace  = "kube-system"
 }
 
+resource "null_resource" "external-dns-secret" {
+  depends_on = [null_resource.kubeconfig]
+  provisioner "local-exec" {
+    command = <<EOT
+cat <<-EOF > ${path.module}/azure.json
+{
+  "tenantId": "${data.azurerm_subscription.current.ARM_TENANT_ID}",
+  "subscriptionId": "${data.azurerm_subscription.current.ARM_SUBSCRIPTION_ID}",
+  "resourceGroup": "${data.azurerm_resource_group.main.name}",
+  "useManagedIdentityExtension": true,
+  "userAssignedIdentityID": "${azurerm_kubernetes_cluster.main.kubelet_identity[0].ARM_CLIENT_ID}"
+}
+EOF
+kubectl create secret generic azure-config-file --namespace "kube-system" --from-file=${path.module}/azure.json
+EOT
+  }
+}
+
 resource "helm_release" "dns" {
   depends_on = [null_resource.kubeconfig]
   name       = "external-dns"
