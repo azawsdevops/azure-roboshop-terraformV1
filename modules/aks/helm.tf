@@ -62,11 +62,11 @@ resource "null_resource" "external-dns-secret" {
     command = <<EOT
 cat <<-EOF > ${path.module}/azure.json
 {
-  "tenantId": "${data.azurerm_subscription.current.ARM_TENANT_ID}",
-  "subscriptionId": "${data.azurerm_subscription.current.ARM_SUBSCRIPTION_ID}",
+  "tenantId": "${data.vault_generic_secret.az.data["tenant_id"]}",
+  "subscriptionId": "${data.vault_generic_secret.az.data["ARM_SUBSCRIPTION_ID"]}",
   "resourceGroup": "${data.azurerm_resource_group.main.name}",
   "useManagedIdentityExtension": true,
-  "userAssignedIdentityID": "${azurerm_kubernetes_cluster.main.kubelet_identity[0].ARM_CLIENT_ID}"
+  "userAssignedIdentityID": "${azurerm_kubernetes_cluster.main.kubelet_identity[0].id}",
 }
 EOF
 kubectl create secret generic azure-config-file --namespace "kube-system" --from-file=${path.module}/azure.json
@@ -80,8 +80,7 @@ resource "helm_release" "dns" {
   repository = "https://kubernetes-sigs.github.io/external-dns/"
   chart      = "external-dns"
   namespace  = "kube-system"
-    set {
-        name  = "provider"
-        value = "azure"
-    }
+  values = [
+    file("${path.module}/files/external-dns.yaml")
+  ]
 }
